@@ -1,4 +1,7 @@
 const { request, response } = require('express')
+const bycript = require('bcrypt')
+
+const User = require('../models/user')
 
 const userGet = (req = request, res = response ) => {
     res.json({
@@ -18,15 +21,37 @@ const userGetParams = (req = request, res = response ) => {
     })
 }
 
-const userPost = (req, res = response ) => {
+const userPost = async (req, res = response ) => {
     
-    const { name, age } = req.body;
+    const {name, email, password, rol, ...rest} = req.body;
+    
+    const user = new User({name, email, password, rol});
 
-    res.json({
-        msg: ' Post de Hola Juan ',
-        name, 
-        age
-    })
+        const existEmail = await User.findOne({ correo })
+        if( correo ){
+            
+            return res.status(400).json({
+                msg: "email is registered"
+            })
+        }
+
+        const salt = bycript.genSaltSync();
+        user.password = bycript.hashSync(password, salt)
+
+    try {
+
+        await user.save();
+        res.json({
+            msg: ' Post de Hola Juan ',
+            user
+        })
+
+    } catch (err) {
+        throw new Error(`El error es ${err}`);
+    }
+   
+
+   
 }
 
 const userPut = (req, res = response ) => {
