@@ -1,5 +1,6 @@
-const { request, response } = require('express')
-const bycript = require('bcrypt')
+const { request, response } = require('express');
+const bycript = require('bcrypt');
+const { model } = require('mongoose');
 
 const User = require('../models/user')
 
@@ -22,7 +23,8 @@ const userGetParams = (req = request, res = response ) => {
 }
 
 const userPost = async (req, res = response ) => {
-    
+
+   
     const {name, email, password, rol, ...rest} = req.body;
     
     const user = new User({name, email, password, rol});
@@ -31,7 +33,7 @@ const userPost = async (req, res = response ) => {
         if( correo ){
             
             return res.status(400).json({
-                msg: "email is registered"
+                msg: "Email is registered"
             })
         }
 
